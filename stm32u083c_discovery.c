@@ -665,19 +665,29 @@ int32_t BSP_COM_SelectLogPort(COM_TypeDef COM)
 /**
   * @brief  Redirect console output to COM
   */
-#ifdef __GNUC__
-int __io_putchar(int ch)
+#if defined(__ICCARM__)
+size_t __write(int file, unsigned char const *ptr, size_t len)
+{
+  size_t idx;
+  unsigned char const *pdata = ptr;
+
+  for (idx = 0; idx < len; idx++)
+  {
+    iar_fputc((int)*pdata);
+    pdata++;
+  }
+  return len;
+}
+#endif /* __ICCARM__ */
+
+/**
+  * @brief  Redirect console output to COM
+  */
+PUTCHAR_PROTOTYPE
 {
   HAL_UART_Transmit(&hcom_uart [COM_ActiveLogPort], (uint8_t *) &ch, 1, COM_POLL_TIMEOUT);
   return ch;
 }
-#else
-size_t __write(int handle, const unsigned char *buffer, size_t size)
-{
-  HAL_UART_Transmit(&hcom_uart [COM_ActiveLogPort], (uint8_t *) buffer, size, COM_POLL_TIMEOUT);
-  return size;
-}
-#endif /* __GNUC__ */
 #endif /* USE_COM_LOG */
 #endif /* USE_BSP_COM_FEATURE */
 

@@ -4,7 +4,7 @@
   * @author  MCD Application Team
   * @brief   configuration file.
   *          This file should be copied to the application folder and renamed
-  *          to stm32u083c_dk_conf.h
+  *          to stm32u083c_discovery_conf.h
   ******************************************************************************
   * @attention
   *
